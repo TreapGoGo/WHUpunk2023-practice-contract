@@ -22,6 +22,7 @@
 // SPDX-License-Identifier: MIT
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {console} from "forge-std/console.sol";
 
 pragma solidity ^0.8.18;
 
@@ -56,5 +57,6 @@ contract DailyCheckIn is Ownable {
         addressToLastCheckInTimestamp[msg.sender] = block.timestamp;
 
         emit checkInSuccess(msg.sender, block.timestamp, addressToCheckInTimes[msg.sender]);
+        // console.log("checkInSuccess", msg.sender, block.timestamp, addressToCheckInTimes[msg.sender]);
     }
 }

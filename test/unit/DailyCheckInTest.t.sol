@@ -19,7 +19,9 @@ contract DailyCheckInTest is Test {
 
     uint256 checkInTimeInterval;
 
-    event checkInSuccess(address indexed userAddress, uint256 indexed checkInTimestamp, uint256 nowCheckInTimes);
+    event checkInSuccess(
+        address indexed userAddress, uint256 indexed checkInTimestamp, uint256 indexed nowCheckInTimes
+    );
 
     modifier timeWarpForOneYear() {
         if (onAnvil && block.timestamp <= 1000) {
@@ -66,5 +68,19 @@ contract DailyCheckInTest is Test {
             abi.encodeWithSelector(DailyCheckIn.DailyCheckIn__NotEnoughTimeHasPassed.selector, checkInTimeInterval)
         );
         dailyCheckIn.checkIn();
+    }
+
+    ////////////////////////////////
+    // getter functions           //
+    ////////////////////////////////
+
+    function testViewFunctions() public timeWarpForOneYear {
+        vm.startPrank(USER);
+
+        dailyCheckIn.checkIn();
+
+        assert(dailyCheckIn.getCheckInTimeIntervavl() == checkInTimeInterval);
+        assert(dailyCheckIn.getCheckInTimesWithAddress(USER) == 1);
+        assert(dailyCheckIn.getLastCheckInTimestampWithAddress(USER) == block.timestamp);
     }
 }

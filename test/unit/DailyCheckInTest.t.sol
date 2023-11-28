@@ -33,7 +33,7 @@ contract DailyCheckInTest is Test {
     function setUp() public {
         DeployDailyCheckIn deployer = new DeployDailyCheckIn();
         (dailyCheckIn, helperConfig) = deployer.run();
-        (checkInTimeInterval,, onAnvil) = helperConfig.activeNetworkConfig();
+        (checkInTimeInterval,,, onAnvil,,,,,) = helperConfig.activeNetworkConfig();
     }
 
     ///////////////////////////////

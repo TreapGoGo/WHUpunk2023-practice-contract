@@ -1,3 +1,24 @@
+// Layout of Contract:
+// version
+// imports
+// errors
+// interfaces, libraries, contracts
+// Type declarations
+// State variables
+// Events
+// Modifiers
+// Functions
+
+// Layout of Functions:
+// constructor
+// receive function (if exists)
+// fallback function (if exists)
+// external
+// public
+// internal
+// private
+// view & pure functions
+
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.18;
@@ -6,11 +27,16 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Card is ERC721, Ownable {
+    /* state variables */
     uint256 private s_tokenCounter;
     mapping(uint256 => string) public s_tokenIdToUri;
     mapping(uint256 => uint256) public s_tokenIdToSerialNumber;
 
-    // mapping(address => uint256) private s_lastMintTimestamp;
+    /* events */
+
+    event NftMinted(uint256 indexed tokenId, uint256 indexed owner, string indexed tokenUri);
+
+    /* functions */
 
     constructor(address engineAddress) ERC721("WHUPunk Testnet Cards", "CARD") Ownable(engineAddress) {
         s_tokenCounter = 0;

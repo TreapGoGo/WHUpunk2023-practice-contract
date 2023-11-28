@@ -13,7 +13,7 @@ contract DeployDailyCheckIn is Script {
     function run() external returns (DailyCheckIn, HelperConfig) {
         HelperConfig helperConfig = new HelperConfig();
 
-        (uint256 checkInTimeInterval, uint256 deployerKey,) = helperConfig.activeNetworkConfig();
+        (uint256 checkInTimeInterval,, uint256 deployerKey,,,,,,) = helperConfig.activeNetworkConfig();
 
         // console.log(deployerKey);
 

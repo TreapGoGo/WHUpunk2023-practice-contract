@@ -8,6 +8,7 @@ import {CardEngine} from "../src/CardEngine.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 import {CreateSubscription, FundSubscription, AddConsumer} from "./Interactions.s.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
+import {console} from "forge-std/console.sol";
 
 contract DeployCardAndCardEngine is Script {
     constructor() {}
@@ -41,7 +42,9 @@ contract DeployCardAndCardEngine is Script {
 
         CardEngine cardEngine =
             new CardEngine(cardUriArray, mintTimeInterval, vrfCoordinator, gasLane, subscriptionId, callbackGasLimit);
-        Card card = new Card(address(cardEngine));
+        Card card = new Card(address(cardEngine), cardUriArray);
+        // Remember to link the card to the cardEngine!!!!!
+        cardEngine.setCardAddress(address(card)); // Important!! Without this everything will be fucked up!
 
         vm.stopBroadcast();
 
@@ -64,6 +67,7 @@ contract DeployCardAndCardEngine is Script {
                 string(abi.encodePacked("./images/", parameter0, "/", parameter1, parameter2, ".svg"));
             string memory svg = vm.readFile(svgPath);
             cardUriArray[i] = svgToImageURI(svg);
+            // console.log(cardUriArray[i]);
         }
         return cardUriArray;
     }

@@ -36,7 +36,9 @@ contract DailyCheckIn is Ownable {
     mapping(address => uint256) s_addressToLastCheckInTimestamp;
 
     /* Events */
-    event CheckInSuccess(address indexed userAddress, uint256 indexed checkInTimestamp, uint256 nowCheckInTimes);
+    event CheckInSuccess(
+        address indexed userAddress, uint256 indexed checkInTimestamp, uint256 indexed nowCheckInTimes
+    );
 
     /* Modifiers */
     modifier enoughTimeHasPassed() {
@@ -57,6 +59,7 @@ contract DailyCheckIn is Ownable {
         s_addressToLastCheckInTimestamp[msg.sender] = block.timestamp;
 
         emit CheckInSuccess(msg.sender, block.timestamp, s_addressToCheckInTimes[msg.sender]);
+        // console.log(msg.sender, block.timestamp, s_addressToCheckInTimes[msg.sender]);
         // console.log("checkInSuccess", msg.sender, block.timestamp, addressToCheckInTimes[msg.sender]);
     }
 

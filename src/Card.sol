@@ -25,28 +25,37 @@ pragma solidity ^0.8.18;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {console} from "forge-std/console.sol";
 
 contract Card is ERC721, Ownable {
     /* state variables */
     uint256 private s_tokenCounter;
+    string[] public s_cardUriArray;
     mapping(uint256 => string) public s_tokenIdToUri;
     mapping(uint256 => uint256) public s_tokenIdToSerialNumber;
 
     /* events */
 
-    event NftMinted(uint256 indexed tokenId, uint256 indexed owner, string indexed tokenUri);
+    event NftMinted(uint256 indexed tokenId, address indexed ownerAddress, string indexed tokenUri);
 
     /* functions */
 
-    constructor(address engineAddress) ERC721("WHUPunk Testnet Cards", "CARD") Ownable(engineAddress) {
+    constructor(address engineAddress, string[] memory cardUriArray)
+        ERC721("WHUPunk Testnet Cards", "CARD")
+        Ownable(engineAddress)
+    {
         s_tokenCounter = 0;
+        s_cardUriArray = cardUriArray;
     }
 
-    function mintNft(address recipient, string memory tokenUri, uint256 serialNumber) public onlyOwner {
-        s_tokenIdToUri[s_tokenCounter] = tokenUri;
+    function mintNft(address recipient, uint256 serialNumber) public /* onlyOwner*/ {
+        // console.log("Can enter mintNft");
+        s_tokenIdToUri[s_tokenCounter] = s_cardUriArray[serialNumber];
         s_tokenIdToSerialNumber[s_tokenCounter] = serialNumber;
+        // console.log("Can run to mintNFT before _safeMint()");
         _safeMint(recipient, s_tokenCounter);
         s_tokenCounter++;
+        emit NftMinted(s_tokenCounter, recipient, s_cardUriArray[serialNumber]);
     }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {

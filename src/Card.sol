@@ -26,12 +26,14 @@ pragma solidity ^0.8.18;
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {console} from "forge-std/console.sol";
+import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Card is ERC721, Ownable {
     /* state variables */
     uint256 private s_tokenCounter;
     string[] public s_cardUriArray;
-    mapping(uint256 => string) public s_tokenIdToUri;
+    mapping(uint256 => string) public s_tokenIdToImageUri;
     mapping(uint256 => uint256) public s_tokenIdToSerialNumber;
 
     /* events */
@@ -50,7 +52,7 @@ contract Card is ERC721, Ownable {
 
     function mintNft(address recipient, uint256 serialNumber) public /* onlyOwner*/ {
         // console.log("Can enter mintNft");
-        s_tokenIdToUri[s_tokenCounter] = s_cardUriArray[serialNumber];
+        s_tokenIdToImageUri[s_tokenCounter] = s_cardUriArray[serialNumber];
         s_tokenIdToSerialNumber[s_tokenCounter] = serialNumber;
         // console.log("Can run to mintNFT before _safeMint()");
         _safeMint(recipient, s_tokenCounter);
@@ -58,8 +60,31 @@ contract Card is ERC721, Ownable {
         emit NftMinted(s_tokenCounter, recipient, s_cardUriArray[serialNumber]);
     }
 
+    function _baseURI() internal pure override returns (string memory) {
+        return "data:application/json;base64,";
+    }
+
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        return s_tokenIdToUri[tokenId];
+        string memory imageUri = s_tokenIdToImageUri[tokenId];
+        return string(
+            abi.encodePacked(
+                _baseURI(),
+                Base64.encode(
+                    bytes(
+                        abi.encodePacked(
+                            '{"name":"',
+                            name(),
+                            '", "description":"WHUpunk NFT Testnet Card", ',
+                            '"attributes": [{"serial_number": "',
+                            Strings.toString(s_tokenIdToSerialNumber[tokenId]),
+                            '"}], "image":"',
+                            imageUri,
+                            '"}'
+                        )
+                    )
+                )
+            )
+        );
     }
 
     function tokenSerialNumber(uint256 tokenId) public view returns (uint256) {

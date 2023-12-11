@@ -114,7 +114,7 @@ contract CardEngine is Ownable, VRFConsumerBaseV2 {
      * @param randomWords the random word array given by the VRF coordinator
      */
     function fulfillRandomWords(uint256, /* requestId */ uint256[] memory randomWords) internal override {
-        console.log("!!!!!!!!fulfillRandomWords Called!!!");
+        // console.log("!!!!!!!!fulfillRandomWords Called!!!");
         for (uint256 i = 0; i < 3; i++) {
             addressToSerialNumberArrayReadyToMint[s_nowMinter].push(randomWords[i] % s_cardUriArray.length);
         }
